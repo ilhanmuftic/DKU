@@ -1,0 +1,124 @@
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  label {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 3px;
+    background-color: #f7f7f7;
+  }
+  
+  input[type="submit"] {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 50px;
+    background-color: #845EC2;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #6F42C1;
+  }
+  
+  /* Page styles */
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 2rem;
+  }
+  
+  h1 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .container {
+    width: 80%;
+    max-width: 600px;
+    height: auto; /* Changed to auto to adapt to content */
+    padding: 2rem;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(111, 66, 193, 0.4);
+  }
+  
+  #sign-in-btn,
+  #sign-up-btn {
+    margin: 10px 0;
+    padding: 10px 20px;
+    text-align: left;
+    border: none;
+    border-radius: 70px;
+    background-color: #1e90ff;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  #sign-in-btn:hover,
+  #sign-up-btn:hover {
+    background-color: #520da1;
+  }
+  
+  .forms-container {
+    height: auto; /* Changed to auto to adapt to content */
+  }
+  
+  .sign-in-form,
+  .sign-up-form {
+    height: auto; /* Changed to auto to adapt to content */
+  }
+  
+  
+  @media only screen and (max-width: 900px) {
+    body{
+      overflow-y: hidden;
+    }
+    .container{
+      height: 50%;
+    }
+    .title{
+      font-size: 2.2rem;
+      margin-bottom: 20%;
+    }
+  
+    * {
+      font-size: 2rem; /* Adjusted font size for labels on mobile */
+    }
+  
+    input {
+      width: 100%;
+      font-size: 2rem; /* Adjusted font size for form elements on mobile */
+    }
+  
+    input[type="submit"] {
+     margin-top: 30%;
+    }
+  
+    #sign-in-btn,
+    #sign-up-btn {
+      padding: 15px 30px; /* Increased padding for better touch interactions on mobile */
+      font-size: 1.2rem; /* Increased font size for better visibility on mobile */
+    }
+  }
