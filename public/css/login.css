@@ -1,5 +1,9 @@
 /* Form styles */
-form {
+body{
+    background-color: black;
+  }
+  
+  form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,23 +21,16 @@ form {
     margin-bottom: 1rem;
     padding: 0.5rem;
     border: none;
-    border-radius: 3px;
-    background-color: #f7f7f7;
+    border-radius: 10px;
+    background-color: #5a5959;
+    font-size: 30px;
   }
   
-  input[type="submit"] {
-    padding: 0.5rem;
-    border: none;
-    border-radius: 50px;
-    background-color: #845EC2;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+  
+  input[type="submit"]{
+    text-transform: uppercase;
   }
   
-  input[type="submit"]:hover {
-    background-color: #6F42C1;
-  }
   
   /* Page styles */
   body {
@@ -57,37 +54,25 @@ form {
     height: auto; /* Changed to auto to adapt to content */
     padding: 2rem;
     border-radius: 20px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px 0 rgba(111, 66, 193, 0.4);
+    background-color: black;
   }
   
-  #sign-in-btn,
-  #sign-up-btn {
-    margin: 10px 0;
-    padding: 10px 20px;
-    text-align: left;
-    border: none;
-    border-radius: 70px;
-    background-color: #1e90ff;
-    color: #fff;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
   
-  #sign-in-btn:hover,
-  #sign-up-btn:hover {
-    background-color: #520da1;
-  }
   
   .forms-container {
     height: auto; /* Changed to auto to adapt to content */
+    background-color: black;
   }
   
   .sign-in-form,
   .sign-up-form {
     height: auto; /* Changed to auto to adapt to content */
+    background-color: black;
+  }
+  
+  .title{
+    color: white;
+    text-transform: uppercase;
   }
   
   
@@ -97,6 +82,7 @@ form {
     }
     .container{
       height: 50%;
+      width: 100%;
     }
     .title{
       font-size: 2.2rem;
@@ -121,4 +107,15 @@ form {
       padding: 15px 30px; /* Increased padding for better touch interactions on mobile */
       font-size: 1.2rem; /* Increased font size for better visibility on mobile */
     }
+  
+    .sign-in-form{
+      width: 100%;
+      font-size: 5rem;
+    }
+  
+    input {
+      width: 100%;
+      font-size: 2rem; /* Adjusted font size for form elements on mobile */
+    }
+  
   }
