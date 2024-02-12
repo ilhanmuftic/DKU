@@ -48,7 +48,7 @@
     color: #0000F5;
   }
   body {
-    background-color: #333;
+    background-color: #FFF6E9;
     margin: 0;
     padding: 0;
     display: flex;
@@ -75,7 +75,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #333;
+    background-color: #0D9276;
     color: #fff;
     padding: 10px 20px;
     position: fixed;
@@ -88,7 +88,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #333;
+    background-color: #0D9276;
     color: #fff;
   }
   
@@ -167,7 +167,7 @@
   }
   /*
   button {
-    background-color: #6F42C1;
+    background-color: #40A2E3;
     color: #fff;
     border: none;
     cursor: pointer;
@@ -175,7 +175,7 @@
   }
   
   button:hover {
-    background-color: #5116be;
+    background-color: #BBE2EC;
   }
 */
 
@@ -194,7 +194,7 @@ button, input[type="submit"] {
   border-radius: 40px;
   padding-right: var(--dl-space-space-twounits);
   padding-bottom: var(--dl-space-space-oneandhalfunits);
-  background-color: #0000F5;
+  background-color: #40A2E3;
   text-transform: uppercase;
 }
 button:hover, input[type="submit"]:hover {
@@ -326,7 +326,7 @@ nav {
 
 /* WebKit Scrollbar Handle */
 ::-webkit-scrollbar-thumb {
-  background-color:#0000F5; /* Purple color - Change as needed */
+  background-color:#40A2E3; /* Purple color - Change as needed */
   border-radius: 5px;
 }
 

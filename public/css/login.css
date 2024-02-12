@@ -1,121 +1,119 @@
 /* Form styles */
-body{
-    background-color: black;
-  }
-  
-  form {
+body {
+    background-color: white; /* Changed background color to white */
+}
+
+form {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  label {
+}
+
+label {
     margin-top: 1rem;
     margin-bottom: 0.5rem;
     font-weight: bold;
-  }
-  
-  input[type="text"],
-  input[type="email"],
-  input[type="password"] {
+    color: #66ccff; /* Light blue text color */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
     margin-bottom: 1rem;
     padding: 0.5rem;
     border: none;
     border-radius: 10px;
-    background-color: #5a5959;
+    background-color: #f0f8ff; /* Light blue background color */
     font-size: 30px;
-  }
-  
-  
-  input[type="submit"]{
+    color: #333; /* Dark text color */
+}
+
+input[type="submit"] {
     text-transform: uppercase;
-  }
-  
-  
-  /* Page styles */
-  body {
+}
+
+/* Page styles */
+body {
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: Arial, sans-serif;
     font-size: 2rem;
-  }
-  
-  h1 {
+}
+
+h1 {
     margin-top: 2rem;
     margin-bottom: 2rem;
     font-size: 2rem;
     font-weight: bold;
-  }
-  
-  .container {
+}
+
+.container {
     width: 80%;
     max-width: 600px;
     height: auto; /* Changed to auto to adapt to content */
     padding: 2rem;
     border-radius: 20px;
-    background-color: black;
-  }
-  
-  
-  
-  .forms-container {
+    background-color: white; /* Changed background color to white */
+}
+
+.forms-container {
     height: auto; /* Changed to auto to adapt to content */
-    background-color: black;
-  }
-  
-  .sign-in-form,
-  .sign-up-form {
+    background-color: white; /* Changed background color to white */
+}
+
+.sign-in-form,
+.sign-up-form {
     height: auto; /* Changed to auto to adapt to content */
-    background-color: black;
-  }
-  
-  .title{
-    color: white;
+    background-color: white; /* Changed background color to white */
+}
+
+.title {
+    color: #66ccff; /* Light blue text color */
     text-transform: uppercase;
-  }
-  
-  
-  @media only screen and (max-width: 900px) {
-    body{
-      overflow-y: hidden;
+}
+
+@media only screen and (max-width: 900px) {
+    body {
+        overflow-y: hidden;
     }
-    .container{
-      height: 50%;
-      width: 100%;
+
+    .container {
+        height: 50%;
+        width: 100%;
     }
-    .title{
-      font-size: 2.2rem;
-      margin-bottom: 20%;
+
+    .title {
+        font-size: 2.2rem;
+        margin-bottom: 20%;
     }
-  
+
     * {
-      font-size: 2rem; /* Adjusted font size for labels on mobile */
+        font-size: 2rem; /* Adjusted font size for labels on mobile */
     }
-  
+
     input {
-      width: 100%;
-      font-size: 2rem; /* Adjusted font size for form elements on mobile */
+        width: 100%;
+        font-size: 2rem; /* Adjusted font size for form elements on mobile */
     }
-  
+
     input[type="submit"] {
-     margin-top: 30%;
+        margin-top: 30%;
     }
-  
+
     #sign-in-btn,
     #sign-up-btn {
-      padding: 15px 30px; /* Increased padding for better touch interactions on mobile */
-      font-size: 1.2rem; /* Increased font size for better visibility on mobile */
+        padding: 15px 30px; /* Increased padding for better touch interactions on mobile */
+        font-size: 1.2rem; /* Increased font size for better visibility on mobile */
     }
-  
-    .sign-in-form{
-      width: 100%;
-      font-size: 5rem;
+
+    .sign-in-form {
+        width: 100%;
+        font-size: 5rem;
     }
-  
+
     input {
-      width: 100%;
-      font-size: 2rem; /* Adjusted font size for form elements on mobile */
+        width: 100%;
+        font-size: 2rem; /* Adjusted font size for form elements on mobile */
     }
-  
-  }
+}
