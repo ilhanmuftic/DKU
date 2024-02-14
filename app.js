@@ -51,6 +51,19 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'login.html'));
 });
 
+
+app.get('/get-students', authenticate, professorMiddleware, async (req, res) => {
+  const result = await new Promise((resolve, reject) => {
+    db.query('SELECT * FROM students s JOIN classes c ON c.Id=s.Class_id WHERE c.Professor_id = ?', [[req.user.userId]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  return res.status(200).json(result)
+})
+
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', '404.html'))
 })
@@ -146,4 +159,8 @@ async function authenticate(req, res, next) {
       return res.status(401).json({ error: 'Unauthorized - Invalid token' });
       //return res.redirect('/login')
   }
+}
+
+async function professorMiddleware(req, res, next){
+  return  req.user.Type == "Professor" ? next(): res.status(403).json({ error: 'Access forbidden!' });
 }
