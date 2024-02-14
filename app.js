@@ -43,7 +43,7 @@ app.get('/student', authenticate, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'student.html'));
 })
 
-app.get('/professors', (req, res) => {
+app.get('/professor', authenticate, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'professor.html'))
 })
 
