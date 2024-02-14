@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'home.html'));
 });
 
-app.get('/student', (req, res) => {
+app.get('/student', authenticate, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'student.html'));
 })
 
@@ -62,20 +62,32 @@ app.post('/login', async (req, res) => {
       email = email.toLowerCase()
 
       // Find the user by username in the database
-      const result = await client.query('SELECT * FROM users WHERE Email = $1;', [email]);
-
-      if (result.rows.length === 0) {
-          return res.status(401).json({ error: 'Invalid username or password' });
+      const result = await new Promise((resolve, reject) => {
+        db.query('SELECT * FROM users WHERE Email = ?', [[email]], (err, results) => {
+          if (err) reject(err);
+          else resolve(results);
+        });
+      });
+      if (result.length === 0) {
+          return res.status(401).json({ error: 'Invalid email' });
       }
 
-      const user = result.rows[0];
+      const user = result[0];
 
-      // Compare the provided password with the hashed password
+      /*
+      PASSWORD ENCRYPTION --- ADD IN PRODUCTION
+
       const passwordMatch = await bcrypt.compare(password, user.Password);
+      */
 
+      const passwordMatch = password == user.Password;
+
+    
       if (!passwordMatch) {
-          return res.status(401).json({ error: 'Invalid username or password' });
+          return res.status(401).json({ error: 'Invalid password' });
       }
+
+
 
       // Generate a JWT for authentication
       const token = jwt.sign({ userId: user.Id, email: user.Email }, JWT_SECRET, {
@@ -101,7 +113,6 @@ async function authenticate(req, res, next) {
   // Extract the token from the Authorization header
   try {
       const token = req.header('Authorization') || req.cookies.authToken;
-      console.log("Token", token, req.header('Authorization'))
 
       // Check if the token is provided
       if (!token) {
@@ -113,15 +124,17 @@ async function authenticate(req, res, next) {
       // Verify the token
       const decoded = jwt.verify(token, JWT_SECRET);
 
-      // Check if the user exists in the database
-      const result = await client.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+      const result = await new Promise((resolve, reject) => {
+        db.query('SELECT * FROM users WHERE id = ?', [[decoded.userId]], (err, results) => {
+          if (err) reject(err);
+          else resolve(results);
+        });
+      });
 
-      if (result.rows.length === 0) {
+      if (result.length === 0) {
           return res.status(401).json({ error: 'Unauthorized - User not found' });
           //return res.redirect('/login')
       }
-
-      console.log(result.rows)
 
       // Attach the user information to the request object for further use in routes
       req.user = decoded;
