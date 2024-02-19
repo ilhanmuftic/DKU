@@ -52,7 +52,7 @@ app.get('/login', (req, res) => {
 });
 
 
-app.get('/get-students', authenticate, professorMiddleware, async (req, res) => {
+app.get('/professor/get-students', authenticate, professorMiddleware, async (req, res) => {
   const result = await new Promise((resolve, reject) => {
     db.query('SELECT * FROM students s JOIN classes c ON c.Id=s.Class_id WHERE c.Professor_id = ?', [[req.user.userId]], (err, results) => {
       if (err) reject(err);
@@ -103,7 +103,7 @@ app.post('/login', async (req, res) => {
 
 
       // Generate a JWT for authentication
-      const token = jwt.sign({ userId: user.Id, email: user.Email }, JWT_SECRET, {
+      const token = jwt.sign({ userId: user.Id, type: user.Type }, JWT_SECRET, {
           expiresIn: '1y',
       });
       // Return the token to the client
@@ -122,7 +122,6 @@ app.listen(PORT, () => {
 });
 
 async function authenticate(req, res, next) {
-  if (req.body) console.log("body", req.body)
   // Extract the token from the Authorization header
   try {
       const token = req.header('Authorization') || req.cookies.authToken;
@@ -162,5 +161,5 @@ async function authenticate(req, res, next) {
 }
 
 async function professorMiddleware(req, res, next){
-  return  req.user.Type == "Professor" ? next(): res.status(403).json({ error: 'Access forbidden!' });
+  return  req.user.type == "Professor" ? next(): res.status(403).json({ error: 'Access forbidden!' });
 }
