@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-/* color pallete https://colorhunt.co/palette/40a2e3fff6e9bbe2ec0d9276 */
+/* color pallete https://coolors.co/40a2e3-ffffff-bbe2ec-0d9276 */
 
 :root {
   --dl-color-gray-500: #595959;
@@ -43,7 +43,6 @@
 * {
     font-family: Poppins, sans-serif;
     color: #333;
-    color: white;
   }
   .hover:hover{
     transition: 0.3s;
@@ -202,55 +201,9 @@ button, input[type="submit"] {
 button:hover, input[type="submit"]:hover {
   opacity: 0.7;
 }
-  /* Original styles for larger screens */
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  color: #fff;
-  padding: 10px 20px;
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
 
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #333;
-  color: #fff;
-}
 
-.navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 20px;
-}
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
-  color: #fff;
-  right: 60px;
-  position: absolute;
-  width: fit-content;
-}
-
-#username {
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
-  position: absolute;
-  color: #fff;
-  left: 10px;
-}
 
 .navbar-links {
   display: flex;

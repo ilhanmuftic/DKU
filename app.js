@@ -54,7 +54,7 @@ app.get('/login', (req, res) => {
 
 app.get('/professor/get-students', authenticate, professorMiddleware, async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query('SELECT * FROM students s JOIN classes c ON c.Id=s.Class_id WHERE c.Professor_id = ?', [[req.user.userId]], (err, results) => {
+    db.query('SELECT s.*, c.Name as Class FROM students s JOIN classes c ON c.Id=s.Class_id WHERE c.Professor_id = ? ORDER BY Class_id;', [[req.user.userId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
