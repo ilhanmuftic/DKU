@@ -314,3 +314,19 @@ button:hover, input[type="submit"]:hover {
     transform: translateY(0);
   }
 }
+
+.createBtn{
+	position:fixed;
+	width:9%;
+	height:10%;
+	bottom:10%;
+	right:10%;
+	background-color:rgb(19, 115, 206);
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+    box-shadow: 2px 2px 3px #999;
+    cursor: pointer;
+    font-size:200%;
+    outline: none;
+}

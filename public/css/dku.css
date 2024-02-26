@@ -1,0 +1,91 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-image: url('/data/img/home.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #333;
+    text-transform: uppercase;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.background-image {
+    position: relative; /* Omogućava relativno pozicioniranje za overlay */
+    height: 100vh; /* Postavljamo visinu na cijelu visinu ekrana */
+    background-image: url('/data/img/home.jpg'); /* Postavljamo sliku kao pozadinu */
+    background-size: cover; /* Omogućava skaliranje slike kako bi popunila cijelu pozadinu */
+    background-position: center; /* Postavlja poziciju slike na sredinu */
+    background-repeat: no-repeat; /* Sprječava ponavljanje slike */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    text-transform: uppercase; /* Svi tekstovi u većim slovima */
+}
+
+.dark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* Širina overlaya je ista kao i širina prozora */
+    height: 100%; /* Visina overlaya je ista kao i visina prozora */
+    background-color: rgba(0, 0, 0, 0.5); /* Boja overlaya (crna s 50% prozirnosti) */
+    z-index: 1; /* Postavlja overlay iznad pozadinske slike */
+}
+
+.container {
+    text-align: center; /* Centriramo sadržaj */
+    z-index: 2; /* Postavlja sadržaj iznad overlaya */
+}
+
+.box {
+    padding: 100px;
+    font-family: 'Poppins', sans-serif;
+    text-align: center; /* Centriramo tekst na stranici */
+    color: #ffffff;
+    width: 80%;
+    font-size: 3em;
+    white-space: nowrap; /* Sprječava prelazak teksta u više redova */
+    transform: translateY(60px);
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.box p {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8em; /* Stiliziramo dodatni tekst ispod DKU Platforma */
+    margin-bottom: 20px; /* Dodajemo margine ispod paragrafa */
+}
+
+h1 {
+    font-size: 2.5em;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 20px; /* Dodajemo margine ispod naslova */
+}
+
+.button {
+    background-color: #40A2E3;
+    color: #FFFFFF;
+    width: 180px;
+    padding: 20px; /* Smanjujemo padding gumba */
+    border-radius: 20px; /* Smanjujemo border-radius gumba */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 1.2em; /* Smanjujemo veličinu fonta gumba */
+    transform: translateY(60px);
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.button:hover {
+    background-color: #BBE2EC;
+    color: #FFFFFF;
+}
