@@ -35,16 +35,18 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(cookieParser())  
 
+app.use('/student', authenticate, studentMiddleware)
+app.use('/professor', authenticate, professorMiddleware)
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'home.html'));
 });
 
-app.get('/student', authenticate, (req, res) => {
+app.get('/student', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'student.html'));
 })
 
-app.get('/professor', authenticate, (req, res) => {
+app.get('/professor',  (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'professor.html'))
 })
 
@@ -52,12 +54,16 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'login.html'));
 });
 
+app.get('/student/create-assignment',  (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'html', 'create-assignment.html'));
+})
+
 app.get('/student/create-assignment', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'create-assignment.html'));
 })
 
 
-app.get('/professor/get-students', authenticate, professorMiddleware, async (req, res) => {
+app.get('/professor/get-students', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
     db.query('SELECT s.*, c.Name as Class FROM students s JOIN classes c ON c.Id=s.Class_id WHERE c.Professor_id = ? ORDER BY Class_id;', [[req.user.userId]], (err, results) => {
       if (err) reject(err);
@@ -68,7 +74,7 @@ app.get('/professor/get-students', authenticate, professorMiddleware, async (req
   return res.status(200).json(result)
 })
 
-app.get('/student/get-assignments', authenticate, studentMiddleware, async (req, res) => {
+app.get('/student/get-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
     db.query('SELECT a.* FROM assignments a JOIN visibility v ON a.Id = v.Assignment_id JOIN students s ON v.Class = s.Class_id WHERE s.Id = ?;', [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
@@ -79,7 +85,7 @@ app.get('/student/get-assignments', authenticate, studentMiddleware, async (req,
   res.status(200).json(result)
 })
 
-app.get('/student/get-my-assignments', authenticate, studentMiddleware, async (req, res) => {
+app.get('/student/get-my-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
     db.query('SELECT a.*, p.State FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=?;', [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
@@ -139,7 +145,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/student/create-assignment', authenticate, studentMiddleware, async (req, res) => {
+app.post('/student/create-assignment', async (req, res) => {
   const { name, hours, info, date } = req.body
   const assignment_id = uuidv4()
   const result = await new Promise((resolve, reject) => {
@@ -212,6 +218,7 @@ async function studentMiddleware(req, res, next){
       else resolve(results);
     });
   });
+  if(student.length == 0) return res.status(401).json({ error: 'Student does not exist!' });
   req.user.studentId = student[0].Id
   return  req.user.type == "Student" ? next(): res.status(403).json({ error: 'Access forbidden!' });
 }
