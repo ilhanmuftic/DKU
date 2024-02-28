@@ -12,3 +12,6 @@ r = new Request("/student/get-my-assignments")
 
 fetch(r).then(re=>{re.json().then(data=>{console.log(data)})})
 
+r = new Request("/student/get-assignments")
+
+fetch(r).then(re=>{re.json().then(data=>{console.log(data)})})
