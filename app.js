@@ -35,6 +35,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(cookieParser())  
 
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'home.html'));
 });
@@ -67,9 +68,20 @@ app.get('/professor/get-students', authenticate, professorMiddleware, async (req
   return res.status(200).json(result)
 })
 
-app.get('/student/get-assignments', authenticate, async (req, res) => {
+app.get('/student/get-assignments', authenticate, studentMiddleware, async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query('SELECT a.*, p.State FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=?;', [[req.user.userId]], (err, results) => {
+    db.query('SELECT a.* FROM assignments a JOIN visibility v ON a.Id = v.Assignment_id JOIN students s ON v.Class = s.Class_id WHERE s.Id = ?;', [[req.user.studentId]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  res.status(200).json(result)
+})
+
+app.get('/student/get-my-assignments', authenticate, studentMiddleware, async (req, res) => {
+  const result = await new Promise((resolve, reject) => {
+    db.query('SELECT a.*, p.State FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=?;', [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
@@ -127,7 +139,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/student/create-assignment', authenticate, async (req, res) => {
+app.post('/student/create-assignment', authenticate, studentMiddleware, async (req, res) => {
   const { name, hours, info, date } = req.body
   const assignment_id = uuidv4()
   const result = await new Promise((resolve, reject) => {
@@ -137,7 +149,7 @@ app.post('/student/create-assignment', authenticate, async (req, res) => {
     });
   });
 
-  await participate(assignment_id, req.user.userId);
+  await participate(assignment_id, req.user.studentId);
 
   return res.redirect('/student');
 })
@@ -194,6 +206,13 @@ async function professorMiddleware(req, res, next){
 }
 
 async function studentMiddleware(req, res, next){
+  const student = await new Promise((resolve, reject) => {
+    db.query('SELECT * FROM students WHERE User_id=?', [[[req.user.userId]]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+  req.user.studentId = student[0].Id
   return  req.user.type == "Student" ? next(): res.status(403).json({ error: 'Access forbidden!' });
 }
 
