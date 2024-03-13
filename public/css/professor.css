@@ -1,34 +1,37 @@
+body{
+  background-color: #f2f2f2;
+}
+
+
 #student-container{
     position: relative;
     display:flex;
     background: transparent;
-    top: 10%;
-    width: 100%;
+    top: 7.5%;
+    width: 75%;
     height: 92.5%;
     overflow-y: hidden;
     overflow-x: hidden;
     flex-direction: column;
+    background-color: #FFF;
 }
 
 .student-all{
     height: auto;
     display: flex;
     flex-direction: column;
-    width: 95%;
+    width: 100%;
 }
 
 .student{
     display: flex;
-    margin-top:1%;
-    margin-left: 5%;
-    width: 90%;
+    width: 100%;
     height: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .collapsible {
-    background-color: #eee;
     color: #444;
     cursor: pointer;
     padding: 18px;
@@ -41,17 +44,19 @@
 
 
   .content {
-    display: none;
-    overflow: hidden;
-    /*background: linear-gradient(hotpink, orange);*/
-    margin-bottom: 3px;
-    color: #444;
-    min-height: 5.5rem;
-    max-height: 15rem;
-    height: auto;
-    width: 100%;
+    display: inline-block;
+    text-align: left;
+    padding: 20px;
+  }
+
+  .student-name{
+    width: 25%;
+  }
+
+  .student-assignments, .student-dates, .student-descriptions{
+    display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+    width: 20%;
   }
 
   .info1 span{
@@ -59,6 +64,7 @@
     width: fit-content;
   }
 
-  .active, .collapsible:hover {
+  .active, .student:hover {
+    cursor: pointer;
     background-color: #ccc;
   }

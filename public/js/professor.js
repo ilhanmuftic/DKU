@@ -17,7 +17,6 @@ function createStudent(student){
   
   const collapsibleDiv = document.createElement('div');
   collapsibleDiv.classList.add('student', 'collapsible');
-  collapsibleDiv.style.cssText = 'left:0;width:20%;text-align:left;height:100%;';
   collapsibleDiv.textContent = student.Name;
   
   const contentDiv = document.createElement('div');
