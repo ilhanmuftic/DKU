@@ -64,14 +64,30 @@ app.get('/student/create-assignment', (req, res) => {
 
 
 app.get('/professor/get-students', async (req, res) => {
-  const result = await new Promise((resolve, reject) => {
-    db.query('SELECT s.*, c.Name as Class FROM students s JOIN classes c ON c.Id=s.Class_id WHERE c.Professor_id = ? ORDER BY Class_id;', [[req.user.userId]], (err, results) => {
+  const results = await new Promise((resolve, reject) => {
+    db.query(`SELECT s.*, c.Name AS Class, 
+    CONCAT('[', GROUP_CONCAT(
+        CONCAT('{ "Id": "', a.Id, '", "Name": "', a.Name, '", "State": "', p.State, '"}')
+        ORDER BY a.Id SEPARATOR ', '), ']') AS Assignments
+      FROM students s 
+      JOIN classes c ON c.Id = s.Class_id 
+      LEFT JOIN participate p ON s.Id = p.Student_id
+      LEFT JOIN assignments a ON p.Assignment_id = a.Id
+      WHERE c.Professor_id = ?
+      GROUP BY s.Id, c.Id
+      ORDER BY s.Class_id;
+
+`, [[req.user.userId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
   });
 
-  return res.status(200).json(result)
+  results.forEach(result => {
+    result.Assignments = JSON.parse(result.Assignments)
+  });
+
+  return res.status(200).json(results)
 })
 
 app.get('/student/get-assignments', async (req, res) => {

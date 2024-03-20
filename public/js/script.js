@@ -52,6 +52,33 @@ function selectAll() {
     for (i of x) { i.click() }
 }
 
+
+function displayDataTable(data) {
+    const table = document.createElement('table');
+    table.cellSpacing = 0
+    const headerRow = table.insertRow();
+    const headers = ['Name', 'Assignment', 'Date', 'Description', 'Hours'];
+
+    headers.forEach(headerText => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+
+    data.forEach(info => {
+        const row = table.insertRow();
+        const keys = ['Name', 'Assignment', 'Date', 'Description', 'Hours']; 
+
+        keys.forEach(key => {
+            const cell = row.insertCell(); 
+            cell.textContent = info[key] || '';
+        })
+
+    });
+
+    document.getElementById('data-table').appendChild(table);
+}
+
 function searchCompanies() {
     // Declare variables
     var input, filter, cards, card, h2, i, txtValue;

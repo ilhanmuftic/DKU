@@ -4,9 +4,12 @@ const studentContainer = document.getElementById('student-container')
 r = new Request("/professor/get-students")
 
 fetch(r).then(re=>{re.json().then(data=>{
+  /*
   for(student of data){
     studentContainer.append(createStudent(student))
-  } 
+  } */
+  console.log(data)
+  displayStudentTable(data)
 })})
 
 
@@ -43,5 +46,41 @@ function createStudent(student){
   studentDiv.appendChild(collapsibleDiv);
   
   return studentDiv
+}
+
+function displayStudentTable(data) {
+  const table = document.createElement('table');
+  table.cellSpacing = 0
+  const headerRow = table.insertRow();
+  const headers = ['Name', 'Hours', 'Assignments', 'Date', 'State', ];
+
+  headers.forEach(headerText => {
+      const th = document.createElement('th');
+      th.textContent = headerText;
+      headerRow.appendChild(th);
+  });
+
+  data.forEach(info => {
+      var row = table.insertRow();
+
+      row.insertCell().textContent = info.Name
+      row.insertCell().textContent = info.Hours
+
+      const keys = ['Name', 'Date', 'State']; 
+      info.Assignments.forEach(assignment => {
+        keys.forEach(key => {
+          const cell = row.insertCell(); 
+          cell.textContent = assignment   [key] || '';
+        })
+
+        row = table.insertRow()
+        row.insertCell();row.insertCell();
+      })
+
+      table.deleteRow(-1)
+
+  });
+
+  document.getElementById('data-table').appendChild(table);
 }
 
