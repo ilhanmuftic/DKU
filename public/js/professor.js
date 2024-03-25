@@ -62,22 +62,29 @@ function displayStudentTable(data) {
 
   data.forEach(info => {
       var row = table.insertRow();
-
+      row.classList.add('info')
       row.insertCell().textContent = info.Name
       row.insertCell().textContent = info.Hours
 
       const keys = ['Name', 'Date', 'State']; 
-      info.Assignments.forEach(assignment => {
+
+      if (!info.Assignments || info.Assignments.length === 0) {
         keys.forEach(key => {
-          const cell = row.insertCell(); 
-          cell.textContent = assignment   [key] || '';
-        })
-
-        row = table.insertRow()
-        row.insertCell();row.insertCell();
-      })
-
-      table.deleteRow(-1)
+          const cell = row.insertCell();
+          cell.textContent = ''; // or you can set a default value
+        });
+      } else {
+        info.Assignments.forEach(assignment => {
+          keys.forEach(key => {
+            const cell = row.insertCell();
+            cell.textContent = assignment[key] || '';
+          });
+          row = table.insertRow();
+          row.insertCell();
+          row.insertCell();
+        });
+        table.deleteRow(-1);
+      }
 
   });
 

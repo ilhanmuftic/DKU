@@ -17,7 +17,6 @@ table {
 }
 
 th, td {
-    border-bottom: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
 }
@@ -82,4 +81,6 @@ a.row-link {
     color: red;
   }
 
-  
+  .info td{
+    border-top: 1px solid #dddddd;
+  }
