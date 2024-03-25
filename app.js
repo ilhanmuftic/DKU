@@ -58,7 +58,7 @@ app.get('/student/create-assignment',  (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'create-assignment.html'));
 })
 
-app.get('/student/create-assignment', (req, res) => {
+app.get('/professor/create-assignment', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'create-assignment.html'));
 })
 
@@ -163,17 +163,15 @@ app.post('/login', async (req, res) => {
 
 app.post('/student/create-assignment', async (req, res) => {
   const { name, hours, info, date } = req.body
-  const assignment_id = uuidv4()
-  const result = await new Promise((resolve, reject) => {
-    db.query('INSERT INTO assignments (Id, Name, Hours, Info, Date, User_id) VALUES ?', [[[assignment_id, name, hours, info, date, req.user.userId]]], (err, results) => {
-      if (err) reject(err);
-      else resolve(results);
-    });
-  });
+  const assignment_id = await createAssignment(name, hours, info, date, req.user.userId)
+  await participate(assignment_id, req.user.studentId)
+  return res.redirect(`/student`);
+})
 
-  await participate(assignment_id, req.user.studentId);
-
-  return res.redirect('/student');
+app.post('/professor/create-assignment', async (req, res) => {
+  const { name, hours, info, date } = req.body
+  const assignment_id = createAssignment(name, hours, info, date, req.user.userId)
+  return res.redirect(`/professor`);
 })
 
 app.get('*', (req, res) => {
@@ -183,6 +181,18 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+async function createAssignment(name, hours, info, date, userId, studentId){
+  const assignment_id = uuidv4()
+  const result = await new Promise((resolve, reject) => {
+    db.query('INSERT INTO assignments (Id, Name, Hours, Info, Date, User_id) VALUES ?', [[[assignment_id, name, hours, info, date, userId]]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  return assignment_id
+}
 
 async function authenticate(req, res, next) {
   // Extract the token from the Authorization header
@@ -213,7 +223,6 @@ async function authenticate(req, res, next) {
 
       // Attach the user information to the request object for further use in routes
       req.user = decoded;
-
       // Continue to the next middleware or route handler
       next();
   } catch (error) {

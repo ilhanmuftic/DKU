@@ -15,8 +15,6 @@ function toggleNavbar() {
 
 function formatDate(datetime) {
     return new Date(datetime).toLocaleString('en-UK', {
-        hour: '2-digit',
-        minute: '2-digit',
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
