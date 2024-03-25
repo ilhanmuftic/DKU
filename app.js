@@ -67,7 +67,7 @@ app.get('/professor/get-students', async (req, res) => {
   const results = await new Promise((resolve, reject) => {
     db.query(`SELECT s.*, c.Name AS Class, 
     CONCAT('[', GROUP_CONCAT(
-        CONCAT('{ "Id": "', a.Id, '", "Name": "', a.Name, '", "State": "', p.State, '"}')
+        CONCAT('{ "Id": "', a.Id, '", "Name": "', a.Name, '", "State": "', p.State, '", "Date": "', a.Date , '"}')
         ORDER BY a.Id SEPARATOR ', '), ']') AS Assignments
       FROM students s 
       JOIN classes c ON c.Id = s.Class_id 

@@ -75,6 +75,7 @@ function displayStudentTable(data) {
         });
       } else {
         info.Assignments.forEach(assignment => {
+          assignment['Date'] = formatDate(assignment['Date'])
           keys.forEach(key => {
             const cell = row.insertCell();
             cell.textContent = assignment[key] || '';

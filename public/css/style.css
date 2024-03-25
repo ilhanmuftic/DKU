@@ -331,7 +331,4 @@ button:hover, input[type="submit"]:hover {
     outline: none;
 }
 
-table .item, table .td{
-  border-bottom: 0;
-}
 
