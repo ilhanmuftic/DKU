@@ -6,6 +6,7 @@
     <title>Student</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/student.css">
+    <link rel="stylesheet" href="/css/assignment.css">
 </head>
 <body>
     <nav class="navbar">
@@ -18,6 +19,17 @@
             </ul>
         </div>
     </nav>
+    <div class="container">
+        <div class="event-list" id="my-assignments">
+            <div class="event-card">
+                <h3>{{event.name}}</h3>
+                <p>{{event.place}}</p>
+                <p>{{event.time}}</p>
+                <p>People signed up: {{event.people}}</p>
+                <button (click)="joinEvent(event)" class="join-button">Join</button>
+            </div>
+        </div>
+    </div>
 
     <button class="createBtn" onclick="location.href = '/student/create-assignment'">+</button>
     <script src="/js/student.js"></script>
