@@ -20,7 +20,9 @@
         </div>
     </nav>
     <div class="container">
-        <div class="event-list" id="my-assignments">
+        <h2 class="section-name">Assignments</h2>
+
+        <div class="event-list" id="assignments">
             <div class="event-card">
                 <h3>{{event.name}}</h3>
                 <p>{{event.place}}</p>
@@ -29,9 +31,14 @@
                 <button (click)="joinEvent(event)" class="join-button">Join</button>
             </div>
         </div>
+
+        <h2 class="section-name">My Assignments</h2>
+        <div class="event-list" id="my-assignments">
+        </div>
     </div>
 
     <button class="createBtn" onclick="location.href = '/student/create-assignment'">+</button>
+    <script src="/js/script.js"></script>
     <script src="/js/student.js"></script>
 </body>
 </html>

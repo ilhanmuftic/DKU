@@ -5,7 +5,10 @@ var Assignments
 
 r = new Request("/student/get-my-assignments")
 
-fetch(r).then(re=>{re.json().then(data=>{console.log(data)})})
+fetch(r).then(re=>{re.json().then(data=>{
+    console.log(data)
+    displayAssignments(data)
+})})
 
 r = new Request("/student/get-assignments")
 
@@ -22,19 +25,19 @@ function displayAssignments(assignments) {
         eventCardDiv.classList.add('event-card');
 
         const eventNameHeading = document.createElement('h3');
-        eventNameHeading.textContent = assignment.name;
+        eventNameHeading.textContent = assignment.Name;
 
         const eventPlaceParagraph = document.createElement('p');
-        eventPlaceParagraph.textContent = assignment.place;
+        eventPlaceParagraph.textContent = formatDate(assignment.Date);
 
         const eventTimeParagraph = document.createElement('p');
-        eventTimeParagraph.textContent = assignment.time;
+        eventTimeParagraph.textContent = `Hours: ${assignment.Hours}h`;
 
         const eventPeopleParagraph = document.createElement('p');
-        eventPeopleParagraph.textContent = `People signed up: ${assignment.people}`;
+        eventPeopleParagraph.textContent = assignment.State;
 
         const joinButton = document.createElement('button');
-        joinButton.textContent = 'Join';
+        joinButton.textContent = 'Apply';
         joinButton.classList.add('join-button');
         joinButton.addEventListener('click', () => joinEvent(assignment.id));
 
@@ -48,6 +51,4 @@ function displayAssignments(assignments) {
         eventListDiv.appendChild(eventCardDiv);
     });
     
-
-    return containerDiv;
 }
