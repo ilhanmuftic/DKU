@@ -61,7 +61,7 @@ function displayAssignment(assignment){
     const joinButton = document.createElement('button');
     joinButton.textContent = 'Join';
     joinButton.classList.add('join-button');
-    joinButton.addEventListener('click', () => joinEvent(assignment.id));
+    joinButton.addEventListener('click', () => joinEvent(assignment.Id));
 
     eventCardDiv.appendChild(joinButton);
 
@@ -80,7 +80,7 @@ function displayMyAssignment(assignment){
     const joinButton = document.createElement('button');
     joinButton.textContent = 'View';
     joinButton.classList.add('join-button');
-    joinButton.addEventListener('click', () => joinEvent(assignment.Id));
+    joinButton.addEventListener('click', () => viewEvent(assignment.Id));
 
     eventCardDiv.appendChild(joinButton);
 
@@ -97,4 +97,21 @@ function displayMyAssignment(assignment){
     myEventListDiv.appendChild(eventCardDiv);
 
     return eventCardDiv
+}
+
+
+function joinEvent(assignmentId){
+    data = {assignmentId}
+
+    fetch(`/student/join-event/${assignmentId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+            if(response.ok) location.reload()
+        })
+
 }

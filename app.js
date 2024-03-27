@@ -112,7 +112,10 @@ app.get('/student/get-my-assignments', async (req, res) => {
   res.status(200).json(result)
 })
 
-
+app.post('/student/join-event/:assignmentId', async (req, res) => {
+  await participate(req.params.assignmentId, req.user.studentId)
+  return res.status(200).json();
+})
 
 app.post('/login', async (req, res) => {
   try {
