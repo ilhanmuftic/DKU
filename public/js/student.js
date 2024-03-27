@@ -2,7 +2,7 @@ const eventListDiv = document.getElementById('assignments');
 const myEventListDiv = document.getElementById('my-assignments');
 
 const brk = document.createElement('br')
-var Assignments
+var MY_ASSIGNMENTS = []
 
 
 r = new Request("/student/get-my-assignments")
@@ -10,20 +10,36 @@ r = new Request("/student/get-my-assignments")
 fetch(r).then(re => {
     re.json().then(data => {
         console.log(data)
-        data.forEach(assignment => {
-            displayMyAssignment(assignment)
-        });
+
     })
 })
 
 r = new Request("/student/get-assignments")
 
-fetch(r).then(re => { re.json().then(data => { 
-    console.log(data) 
-    data.forEach(assignment => {
-        displayAssignment(assignment)
-    });
-}) })
+fetch(r).then(re => {
+    re.json().then(data => {
+        console.log(data)
+
+    })
+})
+
+Promise.all([
+    fetch("/student/get-my-assignments").then(response => response.json()),
+    fetch("/student/get-assignments").then(response => response.json())
+])
+    .then(([myAssignments, allAssignments]) => {
+        console.log(myAssignments, allAssignments);
+        MY_ASSIGNMENTS = myAssignments
+        myAssignments.forEach(assignment => {
+            displayMyAssignment(assignment)
+        });
+
+        allAssignments.forEach(assignment => {
+            displayAssignment(assignment)
+        });
+
+    })
+    .catch(error => console.error("Error fetching assignments:", error));
 
 
 function createAssignment(assignment) {
@@ -55,15 +71,17 @@ function createAssignment(assignment) {
 
 }
 
-function displayAssignment(assignment){
+function displayAssignment(assignment) {
     const eventCardDiv = createAssignment(assignment)
+    console.log(MY_ASSIGNMENTS)
+    if (!MY_ASSIGNMENTS.some(ass => ass.Id == assignment.Id)) {
+        const joinButton = document.createElement('button');
+        joinButton.textContent = 'Join';
+        joinButton.classList.add('join-button');
+        joinButton.addEventListener('click', () => joinEvent(assignment.Id));
 
-    const joinButton = document.createElement('button');
-    joinButton.textContent = 'Join';
-    joinButton.classList.add('join-button');
-    joinButton.addEventListener('click', () => joinEvent(assignment.Id));
-
-    eventCardDiv.appendChild(joinButton);
+        eventCardDiv.appendChild(joinButton);
+    }
 
     eventListDiv.appendChild(eventCardDiv);
 
@@ -71,9 +89,9 @@ function displayAssignment(assignment){
 }
 
 
-function displayMyAssignment(assignment){
+function displayMyAssignment(assignment) {
 
-    if(!assignment) return;
+    if (!assignment) return;
 
     const eventCardDiv = createAssignment(assignment)
 
@@ -84,7 +102,7 @@ function displayMyAssignment(assignment){
 
     eventCardDiv.appendChild(joinButton);
 
-    if(assignment.State == "Pending"){
+    if (assignment.State == "Pending") {
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Submit';
         submitButton.classList.add('join-button');
@@ -100,22 +118,22 @@ function displayMyAssignment(assignment){
 }
 
 
-function joinEvent(assignmentId){
-    data = {assignmentId}
+function joinEvent(assignmentId) {
+    data = { assignmentId }
 
     fetch(`/student/join-event/${assignmentId}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      })
+    })
         .then((response) => {
-            if(response.ok) location.reload()
+            if (response.ok) location.reload()
             else alert("An error occurred. Please try again later.");
         }).catch((error) => {
             console.error("Error:", error);
             alert("An error occurred. Please try again later.");
-          });
+        });
 
 }
