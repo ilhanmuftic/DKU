@@ -92,7 +92,7 @@ app.get('/professor/get-students', async (req, res) => {
 
 app.get('/student/get-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query('SELECT a.* FROM assignments a JOIN visibility v ON a.Id = v.Assignment_id JOIN students s ON v.Class = s.Class_id WHERE s.Id = ?;', [[req.user.studentId]], (err, results) => {
+    db.query('SELECT a.* FROM assignments a JOIN visibility v ON a.Id = v.Assignment_id JOIN students s ON v.Class = s.Class_id WHERE s.Id = ? ORDER BY Date DESC;', [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
