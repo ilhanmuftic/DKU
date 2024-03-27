@@ -173,7 +173,9 @@ app.post('/student/create-assignment', async (req, res) => {
 
 app.post('/professor/create-assignment', async (req, res) => {
   const { name, hours, info, date } = req.body
-  const assignment_id = createAssignment(name, hours, info, date, req.user.userId)
+  const assignment_id = await createAssignment(name, hours, info, date, req.user.userId)
+  const classess = await getProfessorClasses(req.user.userId)
+  await adjustVisibility(assignment_id, classess)
   return res.redirect(`/professor`);
 })
 
@@ -260,4 +262,34 @@ async function participate(assignment, student){
   });
 
   return result
+}
+
+
+async function adjustVisibility(assignment, classes){
+  const visibilityArray = []
+
+  classes.forEach(c => {
+    visibilityArray.push([assignment, c.Id])
+  })
+
+  const result = await new Promise((resolve, reject) => {
+    db.query('INSERT INTO visibility (Assignment_id, Class) VALUES ?', [visibilityArray], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  return result
+}
+
+async function getProfessorClasses(professor){
+  const classes = await new Promise((resolve, reject) => {
+    db.query('SELECT * FROM classes WHERE Professor_id = ?', [[[professor]]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+
+  return classes
 }
