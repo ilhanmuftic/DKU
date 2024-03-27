@@ -112,6 +112,10 @@ function joinEvent(assignmentId){
       })
         .then((response) => {
             if(response.ok) location.reload()
-        })
+            else alert("An error occurred. Please try again later.");
+        }).catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again later.");
+          });
 
 }
