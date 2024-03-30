@@ -42,34 +42,6 @@ Promise.all([
     .catch(error => console.error("Error fetching assignments:", error));
 
 
-function createAssignment(assignment) {
-    if (!assignments) return;
-
-
-    const eventCardDiv = document.createElement('div');
-    eventCardDiv.classList.add('event-card');
-
-    const eventNameHeading = document.createElement('h3');
-    eventNameHeading.textContent = assignment.Name;
-
-    const eventPlaceParagraph = document.createElement('p');
-    eventPlaceParagraph.textContent = formatDate(assignment.Date);
-
-    const eventTimeParagraph = document.createElement('p');
-    eventTimeParagraph.textContent = `Hours: ${assignment.Hours}h`;
-
-    const eventPeopleParagraph = document.createElement('p');
-    eventPeopleParagraph.textContent = assignment.State;
-
-    eventCardDiv.appendChild(eventNameHeading);
-    eventCardDiv.appendChild(eventPlaceParagraph);
-    eventCardDiv.appendChild(eventTimeParagraph);
-    eventCardDiv.appendChild(eventPeopleParagraph);
-
-
-    return eventCardDiv;
-
-}
 
 function displayAssignment(assignment) {
     const eventCardDiv = createAssignment(assignment)
@@ -94,13 +66,6 @@ function displayMyAssignment(assignment) {
     if (!assignment) return;
 
     const eventCardDiv = createAssignment(assignment)
-
-    const joinButton = document.createElement('button');
-    joinButton.textContent = 'View';
-    joinButton.classList.add('join-button');
-    joinButton.addEventListener('click', () => viewEvent(assignment.Id));
-
-    eventCardDiv.appendChild(joinButton);
 
     if (assignment.State == "In Progress" || assignment.State == "Denied") {
         const submitButton = document.createElement('button');

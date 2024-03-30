@@ -50,6 +50,10 @@ app.get('/professor',  (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'professor.html'))
 })
 
+app.get('/professor/assignments',  (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'html', 'professor-assignments.html'))
+})
+
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'login.html'));
 });
@@ -60,6 +64,20 @@ app.get('/student/create-assignment',  (req, res) => {
 
 app.get('/professor/create-assignment', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'create-assignment.html'));
+})
+
+app.get('/assignments/:assignmentId', async (req, res) => {
+  //res.sendFile(path.join(__dirname, 'public', 'html', 'assignment.html'));
+  const result = await new Promise((resolve, reject) => {
+    db.query('SELECT * FROM assignments WHERE Id=?', [[req.params.assignmentId]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  if(result[0]) return res.status(200).json(result[0])
+  return res.status(404).send()
+  
 })
 
 
@@ -120,6 +138,17 @@ app.post('/student/assignment-apply/:participateId', async (req, res) => {
 app.post('/student/assignment-submit/:participateId', async (req, res) => {
   await updateAssignmentState(req.params.participateId, 'Pending')
   return res.status(200).json();
+})
+
+app.get('/professor/get-assignments', async (req, res) => {
+  const result = await new Promise((resolve, reject) => {
+    db.query('SELECT a.* FROM assignments a WHERE User_id = ? ORDER BY Date DESC;', [[req.user.userId]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  res.status(200).json(result)
 })
 
 app.post('/professor/assignment-approve/:participateId', async (req, res) => {
@@ -211,7 +240,7 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-async function createAssignment(name, hours, info, date, userId, studentId){
+async function createAssignment(name, hours, info, date, userId){
   const assignment_id = uuidv4()
   const result = await new Promise((resolve, reject) => {
     db.query('INSERT INTO assignments (Id, Name, Hours, Info, Date, User_id) VALUES ?', [[[assignment_id, name, hours, info, date, userId]]], (err, results) => {
@@ -262,7 +291,7 @@ async function authenticate(req, res, next) {
 }
 
 async function professorMiddleware(req, res, next){
-  return  req.user.type == "Professor" ? next(): res.status(403).json({ error: 'Access forbidden!' });
+  return  req.user.type == "Professor" ? next(): res.status(403).json();
 }
 
 async function studentMiddleware(req, res, next){
@@ -272,7 +301,7 @@ async function studentMiddleware(req, res, next){
       else resolve(results);
     });
   });
-  if(student.length == 0) return res.status(403).json({ error: 'Access forbidden!' });
+  if(student.length == 0) return res.status(403).json();
   req.user.studentId = student[0].Id
   return next();
 }

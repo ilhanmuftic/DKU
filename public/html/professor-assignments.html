@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/assignment.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="burger-icon" onclick="toggleNavbar()">☰</div>
+            <a class="logo" href="/">DKU</a>
+            <ul class="navbar-links disabled">
+                <li><a href="/professor">Home</a></li>
+                <li><a href="/professor/assignments">Assignments</a></li>
+                <li><a href="/login" onclick="logout()">Log Out</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h2 class="section-name">Assignments</h2>
+        <div class="event-list" id="assignments"></div>
+    </div>
+
+    <button class="createBtn" onclick="location.href = '/professor/create-assignment'">+</button>
+
+    <script src="/js/script.js"></script>
+    <script src="/js/professor-assignments.js"></script>
+</body>
+</html>

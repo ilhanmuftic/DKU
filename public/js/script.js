@@ -95,3 +95,41 @@ function searchCompanies() {
       }
     });
   }
+
+  
+function createAssignment(assignment) {
+    if (!assignments) return;
+
+
+    const eventCardDiv = document.createElement('div');
+    eventCardDiv.classList.add('event-card');
+
+    const eventNameHeading = document.createElement('h3');
+    eventNameHeading.textContent = assignment.Name;
+
+    const eventPlaceParagraph = document.createElement('p');
+    eventPlaceParagraph.textContent = formatDate(assignment.Date);
+
+    const eventTimeParagraph = document.createElement('p');
+    eventTimeParagraph.textContent = `Hours: ${assignment.Hours}h`;
+
+    const eventPeopleParagraph = document.createElement('p');
+    eventPeopleParagraph.textContent = assignment.State;
+
+    eventCardDiv.appendChild(eventNameHeading);
+    eventCardDiv.appendChild(eventPlaceParagraph);
+    eventCardDiv.appendChild(eventTimeParagraph);
+    eventCardDiv.appendChild(eventPeopleParagraph);
+
+    const joinButton = document.createElement('button');
+    joinButton.textContent = 'View';
+    joinButton.classList.add('join-button');
+
+    const assignmentHref = document.createElement('a')
+    assignmentHref.href = `/assignments/${assignment.Assignment_id || assignment.Id}`;
+    assignmentHref.append(joinButton)
+
+    eventCardDiv.appendChild(assignmentHref);
+    return eventCardDiv;
+
+}

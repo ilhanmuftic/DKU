@@ -15,6 +15,7 @@ table {
     width: 100%;
     height: fit-content;
     border-collapse: collapse;
+    max-width: 100%;
 }
 
 th, td {
