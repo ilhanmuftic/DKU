@@ -21,11 +21,10 @@ table {
 th, td {
     text-align: left;
     padding: 8px;
+    max-width:400px;
 }
 
 td{
-  padding-left: 20px;
-    cursor: pointer;
     white-space: nowrap; /* Spriječava prelamanje teksta */
     overflow: hidden; /* Sakriva sve što prelazi granice */
     text-overflow: ellipsis;

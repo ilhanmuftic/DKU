@@ -28,6 +28,13 @@ function displayStudentTable(data) {
   data.forEach(info => {
       var row = table.insertRow();
       row.classList.add('info')
+      /*
+      const studentHref = document.createElement('a')
+      studentHref.href = `/get-students/${info.Id}`
+      studentHref.innerText = info.Name 
+
+      var cell = row.insertCell()
+      cell.append(studentHref) */
       row.insertCell().textContent = info.Name
       row.insertCell().textContent = info.Hours
 
@@ -44,7 +51,6 @@ function displayStudentTable(data) {
           keys.forEach(key => {
             const cell = row.insertCell();
 
-            
             if(key=='State' && assignment[key] == 'Pending'){
               const approveButton = document.createElement('button')
               approveButton.innerText = "Approve"
@@ -63,7 +69,13 @@ function displayStudentTable(data) {
               cell.append(approveButton)
               cell.append(denyButton)
 
-            } else cell.textContent = assignment[key] || '';
+            } else{ 
+              const assignmentHref = document.createElement('a')
+              assignmentHref.href = `/assignments/${assignment.Assignment_id}`
+              assignmentHref.innerText = assignment[key] || ''
+
+              cell.append(assignmentHref)
+            }
 
           });
           row = table.insertRow();

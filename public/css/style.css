@@ -40,6 +40,10 @@
   --dl-space-space-oneandhalfunits: 24px;
 }
 
+a{
+  text-decoration: none;
+}
+
 * {
     font-family: Poppins, sans-serif;
     color: #333;

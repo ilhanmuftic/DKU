@@ -81,12 +81,13 @@ app.get('/assignments/:assignmentId', async (req, res) => {
 })
 
 
+
 app.get('/professor/get-students', async (req, res) => {
   const results = await new Promise((resolve, reject) => {
     db.query(`SELECT s.*, c.Name AS Class, 
     CONCAT('[', GROUP_CONCAT(
-        CONCAT('{ "Id": "', p.Id, '", "Name": "', a.Name, '", "State": "', p.State, '", "Date": "', a.Date , '"}')
-        ORDER BY CASE WHEN p.State = 'pending' THEN 0 ELSE 1 END, a.Date DESC SEPARATOR ', '), ']') AS Assignments
+        CONCAT('{ "Id": "', p.Id, '", "Name": "', a.Name, '", "State": "', p.State, '", "Date": "', a.Date , '", "Assignment_id": "', a.Id , '"}')
+        ORDER BY CASE WHEN p.State = 'Pending' THEN 0 ELSE 1 END, a.Date DESC SEPARATOR ', '), ']') AS Assignments
       FROM students s 
       JOIN classes c ON c.Id = s.Class_id 
       LEFT JOIN participate p ON s.Id = p.Student_id
@@ -110,7 +111,7 @@ app.get('/professor/get-students', async (req, res) => {
 
 app.get('/student/get-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query('SELECT a.* FROM assignments a JOIN visibility v ON a.Id = v.Assignment_id JOIN students s ON v.Class = s.Class_id WHERE s.Id = ? ORDER BY Date DESC;', [[req.user.studentId]], (err, results) => {
+    db.query(`SELECT a.* FROM assignments a JOIN visibility v ON a.Id = v.Assignment_id JOIN students s ON v.Class = s.Class_id WHERE s.Id = ? ORDER BY Date DESC;`, [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
@@ -121,7 +122,7 @@ app.get('/student/get-assignments', async (req, res) => {
 
 app.get('/student/get-my-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query('SELECT a.*, p.Id AS Id, p.State, p.Assignment_id FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=?;', [[req.user.studentId]], (err, results) => {
+    db.query(`SELECT a.*, p.Id AS Id, p.State, p.Assignment_id FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=? ORDER BY CASE WHEN p.State = 'In Progress' THEN 0 ELSE 1 END, a.Date;`, [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
