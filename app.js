@@ -67,8 +67,8 @@ app.get('/professor/get-students', async (req, res) => {
   const results = await new Promise((resolve, reject) => {
     db.query(`SELECT s.*, c.Name AS Class, 
     CONCAT('[', GROUP_CONCAT(
-        CONCAT('{ "Id": "', a.Id, '", "Name": "', a.Name, '", "State": "', p.State, '", "Date": "', a.Date , '"}')
-        ORDER BY a.Id SEPARATOR ', '), ']') AS Assignments
+        CONCAT('{ "Id": "', p.Id, '", "Name": "', a.Name, '", "State": "', p.State, '", "Date": "', a.Date , '"}')
+        ORDER BY CASE WHEN p.State = 'pending' THEN 0 ELSE 1 END, a.Date DESC SEPARATOR ', '), ']') AS Assignments
       FROM students s 
       JOIN classes c ON c.Id = s.Class_id 
       LEFT JOIN participate p ON s.Id = p.Student_id
@@ -103,7 +103,7 @@ app.get('/student/get-assignments', async (req, res) => {
 
 app.get('/student/get-my-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query('SELECT a.*, p.State FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=?;', [[req.user.studentId]], (err, results) => {
+    db.query('SELECT a.*, p.Id AS Id, p.State, p.Assignment_id FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=?;', [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
@@ -112,8 +112,32 @@ app.get('/student/get-my-assignments', async (req, res) => {
   res.status(200).json(result)
 })
 
-app.post('/student/join-event/:assignmentId', async (req, res) => {
-  await participate(req.params.assignmentId, req.user.studentId)
+app.post('/student/assignment-apply/:participateId', async (req, res) => {
+  await participate(req.params.participateId, req.user.studentId)
+  return res.status(200).json();
+})
+
+app.post('/student/assignment-submit/:participateId', async (req, res) => {
+  await updateAssignmentState(req.params.participateId, 'Pending')
+  return res.status(200).json();
+})
+
+app.post('/professor/assignment-approve/:participateId', async (req, res) => {
+  const participateId = req.params.participateId
+  const assignment = await getAssignmentInfo(participateId);
+  if(!assignment) return res.status(404).json()
+  if( assignment.Professor_id != req.user.userId) return res.status(403).json()
+  await updateStudentHours(assignment.Student_id, assignment.Hours)
+  await updateAssignmentState(participateId, 'Approved')
+  return res.status(200).json();
+})
+
+app.post('/professor/assignment-deny/:participateId', async (req, res) => {
+  const participateId = req.params.participateId
+  const assignment = await getAssignmentInfo(participateId);
+  if(!assignment) return res.status(404).json()
+  if( assignment.Professor_id != req.user.userId) return res.status(403).json()
+  await updateAssignmentState(participateId, 'Denied')
   return res.status(200).json();
 })
 
@@ -248,14 +272,15 @@ async function studentMiddleware(req, res, next){
       else resolve(results);
     });
   });
-  if(student.length == 0) return res.status(401).json({ error: 'Student does not exist!' });
+  if(student.length == 0) return res.status(403).json({ error: 'Access forbidden!' });
   req.user.studentId = student[0].Id
-  return  req.user.type == "Student" ? next(): res.status(403).json({ error: 'Access forbidden!' });
+  return next();
 }
 
 async function participate(assignment, student){
+  const participate_id = uuidv4()
   const result = await new Promise((resolve, reject) => {
-    db.query('INSERT INTO participate (Assignment_id, Student_id) VALUES ?', [[[assignment, student]]], (err, results) => {
+    db.query('INSERT INTO participate (Id, Assignment_id, Student_id) VALUES ?', [[[participate_id, assignment, student]]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
@@ -282,6 +307,17 @@ async function adjustVisibility(assignment, classes){
   return result
 }
 
+async function updateAssignmentState(assignmentId, state){
+  const result = await new Promise((resolve, reject) => {
+    db.query('UPDATE participate SET State=? WHERE Id=?;', [[state], [assignmentId]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  return result
+}
+
 async function getProfessorClasses(professor){
   const classes = await new Promise((resolve, reject) => {
     db.query('SELECT * FROM classes WHERE Professor_id = ?', [[[professor]]], (err, results) => {
@@ -292,4 +328,30 @@ async function getProfessorClasses(professor){
 
 
   return classes
+}
+
+async function getAssignmentInfo(participateId){
+  
+  const assignment = await new Promise((resolve, reject) => {
+    db.query('SELECT c.Professor_id, a.*, p.State, p.Id AS Participate_id, p.Student_id FROM students s JOIN participate p ON p.Student_id=s.Id JOIN classes c ON s.Class_id=c.Id JOIN assignments a ON p.Assignment_id = a.Id WHERE p.Id = ?', [[[participateId]]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  })
+
+  if(assignment[0]) return assignment[0];
+
+  return null
+}
+
+
+async function updateStudentHours(studentId, hours){
+  const result = await new Promise((resolve, reject) => {
+    db.query('UPDATE students SET Hours=Hours+? WHERE Id=?;', [[hours], [studentId]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  return result
 }

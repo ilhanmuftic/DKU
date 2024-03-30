@@ -14,6 +14,7 @@ h1{
 table {
     width: 100%;
     height: fit-content;
+    border-collapse: collapse;
 }
 
 th, td {
@@ -22,7 +23,11 @@ th, td {
 }
 
 td{
+  padding-left: 20px;
     cursor: pointer;
+    white-space: nowrap; /* Spriječava prelamanje teksta */
+    overflow: hidden; /* Sakriva sve što prelazi granice */
+    text-overflow: ellipsis;
 }
 
 a.row-link {

@@ -13,41 +13,6 @@ fetch(r).then(re=>{re.json().then(data=>{
 })})
 
 
-function createStudent(student){
-  const studentDiv = document.createElement('div');
-  studentDiv.classList.add('student-all');
-  studentDiv.id = student.Id;
-  
-  const collapsibleDiv = document.createElement('div');
-  collapsibleDiv.classList.add('student', 'collapsible');
-  collapsibleDiv.textContent = student.Name;
-  
-  const contentDiv = document.createElement('div');
-  contentDiv.classList.add('content');
-  contentDiv.style.display = 'none';
-  
-  const info1Div = document.createElement('div');
-  info1Div.classList.add('info1');
-  contentDiv.textContent = 'Class: ' + student.Class + '   Hours: ' + student.Hours
-
-
-  collapsibleDiv.addEventListener("click", function() {
-    this.classList.toggle("active");
-    if (contentDiv.style.display === "flex") {
-      contentDiv.style.display = "none";
-    } else {
-      contentDiv.style.display = "flex";
-    }
-  });      
-
-  
-  contentDiv.appendChild(info1Div);
-  collapsibleDiv.appendChild(contentDiv)
-  studentDiv.appendChild(collapsibleDiv);
-  
-  return studentDiv
-}
-
 function displayStudentTable(data) {
   const table = document.createElement('table');
   table.cellSpacing = 0
@@ -78,7 +43,28 @@ function displayStudentTable(data) {
           assignment['Date'] = formatDate(assignment['Date'])
           keys.forEach(key => {
             const cell = row.insertCell();
-            cell.textContent = assignment[key] || '';
+
+            
+            if(key=='State' && assignment[key] == 'Pending'){
+              const approveButton = document.createElement('button')
+              approveButton.innerText = "Approve"
+              approveButton.classList.add('state-button')
+              approveButton.classList.add('approve')
+
+              approveButton.onclick = () => {approveAssignment(assignment.Id)}
+
+              const denyButton = document.createElement('button')
+              denyButton.innerText = "Deny"
+              denyButton.classList.add('state-button')
+              denyButton.classList.add('deny')
+
+              denyButton.onclick = () => {denyAssignment(assignment.Id)}
+
+              cell.append(approveButton)
+              cell.append(denyButton)
+
+            } else cell.textContent = assignment[key] || '';
+
           });
           row = table.insertRow();
           row.insertCell();
@@ -92,3 +78,40 @@ function displayStudentTable(data) {
   document.getElementById('data-table').appendChild(table);
 }
 
+function approveAssignment(assignmentId){
+  const data = { assignmentId }
+
+    fetch(`/professor/assignment-approve/${assignmentId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+        .then((response) => {
+            if (response.ok) location.reload()
+            else alert("An error occurred. Please try again later.");
+        }).catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again later.");
+        });
+}
+
+function denyAssignment(assignmentId){
+  const data = { assignmentId }
+
+    fetch(`/professor/assignment-deny/${assignmentId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+        .then((response) => {
+            if (response.ok) location.reload()
+            else alert("An error occurred. Please try again later.");
+        }).catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again later.");
+        });
+}

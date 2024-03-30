@@ -14,7 +14,6 @@ body{
     overflow-x: hidden;
     flex-direction: column;
     background-color: #FFF;
-    z-index: -1;
 }
 
 .student-all{
@@ -68,4 +67,22 @@ body{
   .active, .student:hover {
     cursor: pointer;
     background-color: #ccc;
+  }
+
+
+  .state-button{
+    padding: 15px;
+    font-size: small;
+    text-transform: none;
+    cursor: pointer;
+  }
+
+  .approve{
+    background-color: #66BB6A;
+  }
+
+  .deny{
+
+    margin-left: 10px;
+    background-color: #EF5350;
   }
