@@ -4,11 +4,6 @@ const studentContainer = document.getElementById('student-container')
 r = new Request("/professor/get-students")
 
 fetch(r).then(re=>{re.json().then(data=>{
-  /*
-  for(student of data){
-    studentContainer.append(createStudent(student))
-  } */
-  console.log(data)
   displayStudentTable(data)
 })})
 
@@ -28,13 +23,7 @@ function displayStudentTable(data) {
   data.forEach(info => {
       var row = table.insertRow();
       row.classList.add('info')
-      /*
-      const studentHref = document.createElement('a')
-      studentHref.href = `/get-students/${info.Id}`
-      studentHref.innerText = info.Name 
 
-      var cell = row.insertCell()
-      cell.append(studentHref) */
       row.insertCell().textContent = info.Name
       row.insertCell().textContent = info.Hours
 

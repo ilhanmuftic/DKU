@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'dku';
-const PORT = 3000
+const PORT = 80
 
 const db = mysql.createConnection({
   host: '127.0.0.1',
@@ -50,13 +50,14 @@ app.get('/professor',  (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'professor.html'))
 })
 
-app.get('/professor/assignments',  (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'html', 'professor-assignments.html'))
-})
-
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'login.html'));
 });
+
+
+app.get('/professor/assignments',  (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'html', 'professor-assignments.html'))
+})
 
 app.get('/student/create-assignment',  (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'create-assignment.html'));
@@ -80,6 +81,21 @@ app.get('/assignments/:assignmentId', async (req, res) => {
   
 })
 
+
+app.get('/student/get-assignments', async (req, res) => {
+  const result = await new Promise((resolve, reject) => {
+    db.query(`SELECT a.* FROM assignments a 
+    JOIN visibility v ON a.Id = v.Assignment_id 
+    JOIN students s ON v.Class = s.Class_id 
+    WHERE s.Id = ?
+    ORDER BY Date DESC;`, [[req.user.studentId]], (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  res.status(200).json(result)
+})
 
 
 app.get('/professor/get-students', async (req, res) => {
@@ -109,9 +125,14 @@ app.get('/professor/get-students', async (req, res) => {
   return res.status(200).json(results)
 })
 
-app.get('/student/get-assignments', async (req, res) => {
+
+
+app.get('/student/get-my-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query(`SELECT a.* FROM assignments a JOIN visibility v ON a.Id = v.Assignment_id JOIN students s ON v.Class = s.Class_id WHERE s.Id = ? ORDER BY Date DESC;`, [[req.user.studentId]], (err, results) => {
+    db.query(`SELECT a.*, p.Id AS Id, p.State, p.Assignment_id FROM assignments a 
+    JOIN participate p ON a.Id=p.Assignment_id 
+    WHERE p.Student_id=? 
+    ORDER BY CASE WHEN p.State = 'In Progress' THEN 0 ELSE 1 END, a.Date;`, [[req.user.studentId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
@@ -120,9 +141,9 @@ app.get('/student/get-assignments', async (req, res) => {
   res.status(200).json(result)
 })
 
-app.get('/student/get-my-assignments', async (req, res) => {
+app.get('/professor/get-assignments', async (req, res) => {
   const result = await new Promise((resolve, reject) => {
-    db.query(`SELECT a.*, p.Id AS Id, p.State, p.Assignment_id FROM assignments a JOIN participate p ON a.Id=p.Assignment_id WHERE p.Student_id=? ORDER BY CASE WHEN p.State = 'In Progress' THEN 0 ELSE 1 END, a.Date;`, [[req.user.studentId]], (err, results) => {
+    db.query('SELECT a.* FROM assignments a WHERE User_id = ? ORDER BY Date DESC;', [[req.user.userId]], (err, results) => {
       if (err) reject(err);
       else resolve(results);
     });
@@ -141,16 +162,7 @@ app.post('/student/assignment-submit/:participateId', async (req, res) => {
   return res.status(200).json();
 })
 
-app.get('/professor/get-assignments', async (req, res) => {
-  const result = await new Promise((resolve, reject) => {
-    db.query('SELECT a.* FROM assignments a WHERE User_id = ? ORDER BY Date DESC;', [[req.user.userId]], (err, results) => {
-      if (err) reject(err);
-      else resolve(results);
-    });
-  });
 
-  res.status(200).json(result)
-})
 
 app.post('/professor/assignment-approve/:participateId', async (req, res) => {
   const participateId = req.params.participateId
@@ -254,18 +266,11 @@ async function createAssignment(name, hours, info, date, userId){
 }
 
 async function authenticate(req, res, next) {
-  // Extract the token from the Authorization header
   try {
       const token = req.header('Authorization') || req.cookies.authToken;
 
-      // Check if the token is provided
-      if (!token) {
-          return res.status(401).json({ error: 'Unauthorized - No token provided' });
-          //return res.redirect('/login')
-      }
+      if (!token) return res.status(401).json({ error: 'Unauthorized - No token provided' });
 
-
-      // Verify the token
       const decoded = jwt.verify(token, JWT_SECRET);
 
       const result = await new Promise((resolve, reject) => {
@@ -275,23 +280,16 @@ async function authenticate(req, res, next) {
         });
       });
 
-      if (result.length === 0) {
-          return res.status(401).json({ error: 'Unauthorized - User not found' });
-          //return res.redirect('/login')
-      }
-
-      // Attach the user information to the request object for further use in routes
+      if (result.length === 0) return res.status(401).json({ error: 'Unauthorized - User not found' });
       req.user = decoded;
-      // Continue to the next middleware or route handler
       next();
   } catch (error) {
       console.error(error);
       return res.status(401).json({ error: 'Unauthorized - Invalid token' });
-      //return res.redirect('/login')
   }
 }
 
-async function professorMiddleware(req, res, next){
+function professorMiddleware(req, res, next){
   return  req.user.type == "Professor" ? next(): res.status(403).json();
 }
 
